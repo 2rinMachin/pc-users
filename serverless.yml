@@ -1,0 +1,18 @@
+service: "pc-users"
+
+provider:
+  name: "aws"
+  runtime: "python3.11"
+  memorySize: 512
+  timeout: 20
+  iam:
+    role: "arn:aws:iam::${env:AWS_USER_ID}:role/LabRole"
+
+plugins:
+  - "serverless-python-requirements"
+
+functions:
+  hello:
+    handler: "hello.handler"
+  goodbye:
+    handler: "goodbye.handler"
