@@ -2,17 +2,68 @@ service: "pc-users"
 
 provider:
   name: "aws"
-  runtime: "python3.11"
+  runtime: "python3.13"
   memorySize: 512
   timeout: 20
   iam:
     role: "arn:aws:iam::${env:AWS_USER_ID}:role/LabRole"
+  environment:
+    TF_PROJECT_NAME: "${env:TF_PROJECT_NAME}"
+    TF_STAGE: "${env:TF_STAGE}"
 
-plugins:
-  - "serverless-python-requirements"
+custom:
+  pythonRequirements: {}
 
 functions:
-  hello:
-    handler: "hello.handler"
-  goodbye:
-    handler: "goodbye.handler"
+  authenticate_user:
+    handler: "functions/authenticate_user.handler"
+
+  get_status:
+    handler: "functions/get_status.handler"
+    events:
+      - http:
+          path: "/"
+          method: "get"
+          cors: true
+
+  register:
+    handler: "functions/auth/register.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/auth/register"
+          method: "post"
+          cors: true
+
+  login:
+    handler: "functions/auth/login.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/auth/login"
+          method: "post"
+          cors: true
+
+  logout:
+    handler: "functions/auth/logout.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/auth/logout"
+          method: "post"
+          cors: true
+          authorizer:
+            name: "authenticate_user"
+            type: "request"
+            identitySource: "method.request.header.Authorization"
+            resultTtlInSeconds: 0
+
+  get_self:
+    handler: "functions/get_self.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/users/self"
+          method: "get"
+          cors: true
+          authorizer:
+            name: "authenticate_user"
+            type: "request"
+            identitySource: "method.request.header.Authorization"
+            resultTtlInSeconds: 0
