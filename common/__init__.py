@@ -5,12 +5,12 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
-TF_PROJECT_NAME = os.environ["TF_PROJECT_NAME"]
-TF_STAGE = os.environ["TF_STAGE"]
+PROJECT_NAME = os.environ["PROJECT_NAME"]
+STAGE = os.environ["STAGE"]
 
 
 def table_name(basename: str) -> str:
-    return f"{TF_PROJECT_NAME}-{TF_STAGE}-{basename}"
+    return f"{PROJECT_NAME}-{STAGE}-{basename}"
 
 
 T = TypeVar("T", bound=BaseModel)
