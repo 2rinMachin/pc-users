@@ -1,11 +1,5 @@
 service: "${env:PROJECT_NAME}-users"
 
-params:
-  dev:
-    domain: "${env:PROJECT_NAME}-dev-users.unilife.lat"
-  prod:
-    domain: "${env:PROJECT_NAME}-users.unilife.lat"
-
 provider:
   name: "aws"
   runtime: "python3.13"
@@ -16,10 +10,6 @@ provider:
   environment:
     PROJECT_NAME: "${env:PROJECT_NAME}"
     STAGE: "${env:STAGE}"
-  domain:
-    name: "${param:domain}"
-    certificateArn: "${env:AWS_ACM_CERTIFICATE_ARN}"
-    createRoute53Record: false
 
 custom:
   pythonRequirements: {}
