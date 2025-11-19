@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class UserRole(str, Enum):
-    user = "user"
+    client = "client"
     cook = "cook"
     dispatcher = "dispatcher"
     driver = "driver"
