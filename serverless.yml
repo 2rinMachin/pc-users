@@ -67,3 +67,16 @@ functions:
             type: "request"
             identitySource: "method.request.header.Authorization"
             resultTtlInSeconds: 0
+
+  get_user:
+    handler: "functions/get_user.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/users/{user_id}"
+          method: "get"
+          cors: true
+          authorizer:
+            name: "authenticate_user"
+            type: "request"
+            identitySource: "method.request.header.Authorization"
+            resultTtlInSeconds: 0
