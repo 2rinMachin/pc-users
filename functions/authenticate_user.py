@@ -9,6 +9,9 @@ session_tokens = dynamodb.Table(table_name("session-tokens"))
 
 
 def handler(event, context):
+    if not "Authorization" in event["headers"]:
+        return auth.unauthorized(event)
+
     tenant_id = event.get("pathParameters", {}).get("tenant_id")
     authorization = str(event["headers"]["Authorization"])
 

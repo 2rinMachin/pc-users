@@ -80,3 +80,24 @@ functions:
             type: "request"
             identitySource: "method.request.header.Authorization"
             resultTtlInSeconds: 0
+
+  delete_self:
+    handler: "functions/delete_self.handler"
+    events:
+      - http:
+          path: "/{tenant_id}/users/self"
+          method: "delete"
+          cors: true
+          authorizer:
+            name: "authenticate_user"
+            type: "request"
+            identitySource: "method.request.header.Authorization"
+            resultTtlInSeconds: 0
+
+  delete_user_tokens:
+    handler: "functions/delete_user_tokens.handler"
+    events:
+      - eventBridge:
+          pattern:
+            source: ["${env:PROJECT_NAME}.users"]
+            detail-type: ["user.deleted"]
