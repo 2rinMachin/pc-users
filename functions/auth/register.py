@@ -37,7 +37,7 @@ def handler(event, context):
     )
 
     if resp["Count"] > 0:
-        return response(407, {"message": "User with email already exists."})
+        return response(409, {"message": "User with email already exists."})
 
     id = str(uuid.uuid4())
     hashed_pw = auth.hash_password(data.password)
