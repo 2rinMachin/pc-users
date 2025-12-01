@@ -5,7 +5,7 @@ import bcrypt
 import boto3
 
 from common import table_name
-from schemas import SessionToken, User
+from schemas import AuthorizedUser, SessionToken, User
 
 dynamodb = boto3.resource("dynamodb")
 users = dynamodb.Table(table_name("users"))
@@ -92,5 +92,5 @@ def authorized(event, user: User):
                 }
             ],
         },
-        "context": user.model_dump(),
+        "context": AuthorizedUser(**user.model_dump()).model_dump(),
     }

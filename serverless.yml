@@ -10,6 +10,7 @@ provider:
   environment:
     PROJECT_NAME: "${env:PROJECT_NAME}"
     STAGE: "${env:STAGE}"
+    ORDER_ARRIVALS_TOPIC_ARN: "${env:ORDER_ARRIVALS_TOPIC_ARN}"
 
 custom:
   pythonRequirements: {}

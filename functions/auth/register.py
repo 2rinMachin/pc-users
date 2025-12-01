@@ -1,11 +1,14 @@
+import os
 import uuid
 
 import boto3
 from boto3.dynamodb.conditions import Key
 from pydantic import BaseModel
 
-from common import auth, parse_body, response, table_name
+from common import PROJECT_NAME, STAGE, auth, parse_body, response, table_name
 from schemas import User, UserResponseDto, UserRole
+
+TOPIC_ARN = os.environ["ORDER_ARRIVALS_TOPIC_ARN"]
 
 
 class RegisterRequest(BaseModel):
@@ -16,6 +19,8 @@ class RegisterRequest(BaseModel):
 
 
 dynamodb = boto3.resource("dynamodb")
+events = boto3.client("events")
+
 users = dynamodb.Table(table_name("users"))
 
 
@@ -51,9 +56,17 @@ def handler(event, context):
         role=data.role,
     )
 
-    new_user_dict = new_user.model_dump()
+    users.put_item(Item=new_user.model_dump())
 
-    users.put_item(Item=new_user_dict)
+    events.put_events(
+        Entries=[
+            {
+                "Source": f"{PROJECT_NAME}-{STAGE}.users",
+                "DetailType": "user.created",
+                "Detail": new_user.model_dump_json(),
+            }
+        ]
+    )
 
     return response(
         201, UserResponseDto.model_validate(new_user.model_dump()).model_dump_json()

@@ -18,6 +18,8 @@ def handler(event, context):
     token = auth.extract_session_token(authorization)
     user = verify_session_token(token)
 
+    print("ayooo")
+
     if user == None:
         return auth.unauthorized(event)
 

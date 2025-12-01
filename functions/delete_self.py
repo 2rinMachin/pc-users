@@ -1,7 +1,7 @@
 import boto3
 
 from common import PROJECT_NAME, response, table_name
-from schemas import User
+from schemas import AuthorizedUser
 
 dynamodb = boto3.resource("dynamodb")
 events = boto3.client("events")
@@ -11,7 +11,7 @@ users = dynamodb.Table(table_name("users"))
 
 
 def handler(event, context):
-    user = User(**event["requestContext"]["authorizer"])
+    user = AuthorizedUser(**event["requestContext"]["authorizer"])
 
     tenant_id = event["pathParameters"]["tenant_id"]
 
